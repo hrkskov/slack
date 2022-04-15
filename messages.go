@@ -131,6 +131,9 @@ type Msg struct {
 
 	// Block type Message
 	Blocks Blocks `json:"blocks,omitempty"`
+
+	// metadata
+	Metadata Metadata `json:"metadata,omitempty"`
 }
 
 const (
