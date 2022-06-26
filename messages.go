@@ -134,6 +134,9 @@ type Msg struct {
 
 	// metadata
 	Metadata Metadata `json:"metadata,omitempty"`
+
+	// permalink
+	Permalink string `json:"permalink,omitempty"`
 }
 
 const (
