@@ -25,6 +25,7 @@ const (
 	DEFAULT_MESSAGE_ICON_EMOJI       = ""
 	DEFAULT_MESSAGE_MARKDOWN         = true
 	DEFAULT_MESSAGE_ESCAPE_TEXT      = true
+	DEFAULT_MESSAGE_METADATA         = ""
 )
 
 type chatResponseFull struct {
@@ -60,6 +61,7 @@ type PostMessageParameters struct {
 	IconEmoji       string `json:"icon_emoji"`
 	Markdown        bool   `json:"mrkdwn,omitempty"`
 	EscapeText      bool   `json:"escape_text"`
+	Metadata        string `json:"metadata"`
 
 	// chat.postEphemeral support
 	Channel string `json:"channel"`
@@ -81,6 +83,7 @@ func NewPostMessageParameters() PostMessageParameters {
 		IconEmoji:       DEFAULT_MESSAGE_ICON_EMOJI,
 		Markdown:        DEFAULT_MESSAGE_MARKDOWN,
 		EscapeText:      DEFAULT_MESSAGE_ESCAPE_TEXT,
+		Metadata:        DEFAULT_MESSAGE_METADATA,
 	}
 }
 
@@ -662,6 +665,17 @@ func MsgOptionIconEmoji(iconEmoji string) MsgOption {
 	}
 }
 
+// MsgOptionMetadata sets an icon metadata
+func MsgOptionMetadata(metadata Metadata) MsgOption {
+	return func(config *sendConfig) error {
+		metadata, err := json.Marshal(metadata)
+		if err == nil {
+			config.values.Set("metadata", string(metadata))
+		}
+		return err
+	}
+}
+
 // UnsafeMsgOptionEndpoint deliver the message to the specified endpoint.
 // NOTE: USE AT YOUR OWN RISK: No issues relating to the use of this Option
 // will be supported by the library, it is subject to change without notice that
@@ -723,6 +737,9 @@ func MsgOptionPostMessageParameters(params PostMessageParameters) MsgOption {
 		}
 		if params.ReplyBroadcast != DEFAULT_MESSAGE_REPLY_BROADCAST {
 			config.values.Set("reply_broadcast", "true")
+		}
+		if params.Metadata != DEFAULT_MESSAGE_METADATA {
+			config.values.Set("metadata", params.Metadata)
 		}
 
 		return nil
